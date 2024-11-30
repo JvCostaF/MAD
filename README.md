@@ -10,7 +10,10 @@ Esse trabalho consiste em simular uma rede de filas aberta com tres servidores, 
 
 ## Guia para executar e testar as simulacoes
 
-Por conta da lib utilizada e necessario que voce crie um ambiente virtual com o Python 3.10. O pacote funciona com as versões python 2.7 e 3.4-3.10.
+**Pré-requisitos:** Queueing-tool roda em Python 2.7 e 3.4-3.10. Queueing-tool
+requer `networkx <https://networkx.org/>`__ e
+`numpy <http://www.numpy.org/>`, e depende de
+`matplotlib <http://matplotlib.org/>` se você quiser plotar.
 
 Para instalar o Python 3.10:
 
