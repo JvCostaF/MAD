@@ -21,64 +21,24 @@ As métricas que você quer obter de forma experimental são:
 
 ## Guia para executar e testar as simulacoes
 
-**Pré-requisitos:** Queueing-tool roda em Python 2.7 e 3.4-3.10. Queueing-tool requer [networkx](https://networkx.org/) e [numpy](http://www.numpy.org/), e depende de [matplotlib](http://matplotlib.org/) se você quiser plotar.
+**Pré-requisitos:** Precisamos obviamente do Python instalado além de duas libs [Numpy](http://www.numpy.org/) e [Simpy](https://simpy.readthedocs.io/en/latest/contents.html).
 
-Para instalar o Python 3.10 (Versao qual eu utilizei para implementar o projeto):
-
-**NO WINDOWS:** 
 
 ```
-> winget install -e --id Python.Python.3.10
-``` 
-
-**NO LINUX:** 
-
-``` 
-> sudo apt update && sudo apt upgrade
-> sudo add-apt-repository ppa:deadsnakes/ppa
-> sudo apt install python3.10 python3.10-venv python3.10-distutils
-> python3.10 --version
-``` 
-
-**NO MAC:** 
-
-``` 
-> brew update
-> brew install python@3.10
-> python3.10 --version
-```
-
-Agora vamos criar um ambiente virtual com o Python para instalar os pacotes necessarios pelo programa de simulacoes sem impactar as instalacoes do Python globais no seu sistema. 
-
-Para criar o ambiente virtual:
-```
-python3.10 -m venv ambiente_trabalhoFinal_py3_10
-```
-
-Para acessar e iniciar o ambiente virtual criado:
-
-**NO WINDOWS:** 
-
-```
-> ambiente_trabalhoFinal_py3_10\Scripts\activate
-```
-
-**NO LINUX/MAC:** 
-
-```
-> source ambiente_trabalhoFinal_py3_10/bin/activate
-```
-
-Por fim, precisamos instalar os pacotes nas versoes necessarias.
-
-```
-> pip install queueing_tool
-> pip uninstall nump
-> pip install numpy==1.23
+$ pip install nump
+$ pip install simpy
 ```
 
 Apos isso basta chamar o interpretador do python para executar o programa com:
 
 ```
-> python <nome_do_prorama>.py
+> python simulador.py
 ```
+
+## Links de referências consultadas para a implementação do trabalho
+
+- [Quando usar o yield no Python ](https://medium.com/@bernardo.costa/quando-usar-o-yield-no-python-ebae18b144ba)
+- [Introdução ao Simpy](https://simpy.livrosimulacao.eng.br/parte-i-introducao/criando_as_primeiras_entidades)
+- [PYTHON — Simulating SimPy A Summary in Python](https://laxfed.dev/python-simulating-simpy-a-summary-in-python-4bc1dc7c5930)
+- [Simpy - Environments](https://simpy.readthedocs.io/en/latest/topical_guides/environments.html)
+- [Generate pseudo-random numbers](https://docs.python.org/2/library/random.html)
