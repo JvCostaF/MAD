@@ -37,9 +37,10 @@ Apos isso basta chamar o interpretador do python para executar o programa com:
 
 ## Links de referências consultadas para a implementação do trabalho
 
+- [Aprenda a Utilizar o yield](https://awari.com.br/python-aprenda-a-utilizar-o-yield-para-otimizar-seu-codigo/)
 - [Quando usar o yield no Python ](https://medium.com/@bernardo.costa/quando-usar-o-yield-no-python-ebae18b144ba)
+- [Lambda Functions in Python](https://www.w3schools.com/python/python_lambda.asp)
+- [Generate pseudo-random numbers](https://docs.python.org/2/library/random.html)
 - [Introdução ao Simpy](https://simpy.livrosimulacao.eng.br/parte-i-introducao/criando_as_primeiras_entidades)
 - [Simpy - Environments](https://simpy.readthedocs.io/en/latest/topical_guides/environments.html)
 - [PYTHON — Simulating SimPy A Summary in Python](https://laxfed.dev/python-simulating-simpy-a-summary-in-python-4bc1dc7c5930)
-- [Generate pseudo-random numbers](https://docs.python.org/2/library/random.html)
-- [Lambda Functions in Python](https://www.w3schools.com/python/python_lambda.asp)
