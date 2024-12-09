@@ -10,14 +10,14 @@ class Servidor:
         self.tempoDeServico = tempoDeServico
         self.fila = simpy.Store(env)
         self.statusSistema = {"saidas": []}
-        self.process = env.process(self.run())
+        self.process = env.process(self.processaJobs())
 
-    def run(self):
+    def processaJobs(self): # 
         while True:
             job = yield self.fila.get() # Pegamos os jobs em uma fila, aguardando no caso da fila estar vazia.
 
             tempoDeServico = self.tempoDeServico() # Pegamos o tempo de servico do servidor.
-            yield self.env.timeout(tempoDeServico)
+            yield self.env.timeout(tempoDeServico) # Aqui processamos os jobs, simulando o tempo de servico em que o servidor fica ocupado.
 
             job["tempoDeSaidaDoJob"] = self.env.now
 
@@ -38,15 +38,25 @@ class Servidor:
             elif self.nome == "Servidor3":
                 self.statusSistema["saidas"].append(job) # Determina uma saida do sistema
 
-def gerador_chegadas_jobs(env, taxaDeChegada, filaServidor1, statusSistema):
+def geradorChegadasJobs(env, taxaDeChegada, filaServidor1, statusSistema):
     while True:
-        yield env.timeout(random.expovariate(taxaDeChegada)) # "Pausamos" o ambiente de simulacaoo ate a chegada de um job.
+        u = np.random.uniform(0,1)
+        Chegada = -(np.log(1-u)/taxaDeChegada)
+        yield env.timeout(Chegada)
         statusSistema["qtdJobsNoSistema"] += 1
-        tempoDeChegadaDoJob = env.now # O tempo atual no ambiente de simulacoo.
+        tempoDeChegadaDoJob = env.now # O tempo atual no ambiente de simulacao.
         job = {"jobID": statusSistema["qtdJobsNoSistema"], "tempoDeChegadaDoJob": tempoDeChegadaDoJob} # Criando o dicionario que ira representar um job no sistema.
         filaServidor1.put(job) # Adicionando esse novo job na fila do servidor 1.
 
-def gerador_tempos_servicos(situacao, servidor):
+# def geradorChegadasJobs(env, taxaDeChegada, filaServidor1, statusSistema):
+#     while True:
+#         yield env.timeout(random.expovariate(taxaDeChegada)) # "Pausamos" o ambiente de simulacaoo ate a chegada de um job.
+#         statusSistema["qtdJobsNoSistema"] += 1
+#         tempoDeChegadaDoJob = env.now # O tempo atual no ambiente de simulacao.
+#         job = {"jobID": statusSistema["qtdJobsNoSistema"], "tempoDeChegadaDoJob": tempoDeChegadaDoJob} # Criando o dicionario que ira representar um job no sistema.
+#         filaServidor1.put(job) # Adicionando esse novo job na fila do servidor 1.
+
+def geradorTemposServicos(situacao, servidor):
     if situacao == 1:
         return lambda: [0.4, 0.6, 0.95][servidor - 1]
     elif situacao == 2:
@@ -54,32 +64,33 @@ def gerador_tempos_servicos(situacao, servidor):
     elif situacao == 3:
         return lambda: random.expovariate(1/[0.4, 0.6, 0.95][servidor - 1])
 
-def simula(situacao, taxaDeChegada, qtdJobsWarmUp, qtdJobsParaMedir):
+def simula(situacao, taxaDeChegada, tempoDeSimulacao, qtdJobsWarmUp):
 
     global servidor2, servidor3 # Cria globalmente os servidores 2 e 3. Nao foi necessario criar o servidor 1 pois ele nao e utilizado fora do escopo da funcao simula.
 
     env = simpy.Environment() # Inicia o Environment do Scimpy.
     statusSistema = {"qtdJobsNoSistema": 0} # Inicialmente nao temos nenhum job no sistema.
 
-    servidor1 = Servidor(env, "Servidor1", gerador_tempos_servicos(situacao, 1)) 
-    servidor2 = Servidor(env, "Servidor2", gerador_tempos_servicos(situacao, 2))
-    servidor3 = Servidor(env, "Servidor3", gerador_tempos_servicos(situacao, 3))
+    servidor1 = Servidor(env, "Servidor1", geradorTemposServicos(situacao, 1)) 
+    servidor2 = Servidor(env, "Servidor2", geradorTemposServicos(situacao, 2))
+    servidor3 = Servidor(env, "Servidor3", geradorTemposServicos(situacao, 3))
 
-    env.process(gerador_chegadas_jobs(env, taxaDeChegada, servidor1.fila, statusSistema)) # Inicia o processo de chegada de jobs ao sistema.
+    env.process(geradorChegadasJobs(env, taxaDeChegada, servidor1.fila, statusSistema)) # Inicia o processo de chegada de jobs ao sistema.
 
-    env.run(until=(qtdJobsWarmUp+qtdJobsParaMedir)) # Define o tempo que o ambiente de simulacao ira funcionar.
+    env.run(until=tempoDeSimulacao) # Define o tempo que o ambiente de simulacao ira funcionar.
 
-    temposNoSistema = [job["tempoDeSaidaDoJob"] - job["tempoDeChegadaDoJob"] for job in servidor2.statusSistema["saidas"][qtdJobsWarmUp:] + servidor3.statusSistema["saidas"][qtdJobsWarmUp:]]
+    temposNoSistema = [job["tempoDeSaidaDoJob"] - job["tempoDeChegadaDoJob"] for job in servidor2.statusSistema["saidas"][qtdJobsWarmUp:] + servidor3.statusSistema["saidas"][qtdJobsWarmUp:]] # Descarta o tempo de sistema dos qtdJobsWarmUp sejam descartados.
     tempoMedioNoSistema = np.mean(temposNoSistema)
     desvioPadraoTempMedSis = np.std(temposNoSistema)
-    return tempoMedioNoSistema, desvioPadraoTempMedSis
+    qtdJobs = statusSistema["qtdJobsNoSistema"]
+    return tempoMedioNoSistema, desvioPadraoTempMedSis, qtdJobs
 
 # Configuracoes para simular
 taxaDeChegada = 2
-qtdJobsWarmUp = 10000
-qtdJobsParaMedir = 10000
+tempoDeSimulacao = 100000 # Essa variavel e a quantidade de tempo que o ambiente de simulacao sera executado.
+qtdJobsWarmUp = 10000 # Essa variavel pode ser alterada, mas com a observacao que nao podemos definir uma quantidade de warm up tao proxima do tempo de simulacao.
 
 # Executa a simulação para cada cenário
 for situacao in [1, 2, 3]:
-    media, desvioPadrao = simula(situacao, taxaDeChegada, qtdJobsWarmUp, qtdJobsParaMedir)
-    print(f"Situacao {situacao}: Tempo Medio de Sistema = {media:.4f}s, Desvio Padrao Tempo Medio de Sistema = {desvioPadrao:.4f}s")
+    media, desvioPadrao, qtdJobsNoSistema = simula(situacao, taxaDeChegada, tempoDeSimulacao, qtdJobsWarmUp)
+    print(f"Situacao {situacao}: Tempo Medio de Sistema = {round(media, 4)}s, Desvio Padrao Tempo Medio de Sistema = {round(desvioPadrao, 4)}s com {qtdJobsNoSistema} jobs que passaram pela Rede de Filas.")

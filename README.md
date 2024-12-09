@@ -32,7 +32,7 @@ $ pip install simpy
 Apos isso basta chamar o interpretador do python para executar o programa com:
 
 ```
-> python simulador.py
+$ python simulador.py
 ```
 
 ## Links de referências consultadas para a implementação do trabalho
@@ -42,4 +42,5 @@ Apos isso basta chamar o interpretador do python para executar o programa com:
 - [Lambda Functions in Python](https://www.w3schools.com/python/python_lambda.asp)
 - [Introdução ao Simpy](https://simpy.livrosimulacao.eng.br/parte-i-introducao/criando_as_primeiras_entidades)
 - [Simpy - Environments](https://simpy.readthedocs.io/en/latest/topical_guides/environments.html)
+- [Construindo um conjunto de objetos com Store](https://simpy.livrosimulacao.eng.br/parte-i-introducao/selecionando_um_recurso_especifico_para_um_processo)
 - [PYTHON — Simulating SimPy A Summary in Python](https://laxfed.dev/python-simulating-simpy-a-summary-in-python-4bc1dc7c5930)
